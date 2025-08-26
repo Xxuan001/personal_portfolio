@@ -1,17 +1,35 @@
 // app/_layout.tsx
 import { Slot } from "expo-router";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView, useColorScheme } from "react-native";
 import { Header } from "../components/Header";
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
   return (
-    <View style={styles.app}>
+    <View style={[styles.app, { backgroundColor: isDark ? "#0d0d0d" : "#f8fafc" }]}>
+      {/* Sticky Header */}
       <Header />
-      <View style={styles.pageWrap}>
+
+      {/* Page content with scroll support */}
+      <ScrollView
+        contentContainerStyle={styles.pageWrap}
+        showsVerticalScrollIndicator={false}
+      >
         <Slot />
-      </View>
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>© {new Date().getFullYear()} Your Name</Text>
+      </ScrollView>
+
+      {/* Footer */}
+      <View
+        style={[
+          styles.footer,
+          { borderTopColor: isDark ? "#27272a" : "#e5e7eb" },
+        ]}
+      >
+        <Text style={[styles.footerText, { color: isDark ? "#9ca3af" : "#6b7280" }]}>
+          © {new Date().getFullYear()} Your Name · Built with Expo
+        </Text>
       </View>
     </View>
   );
@@ -20,10 +38,9 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   app: {
     flex: 1,
-    backgroundColor: "#f8fafc", // light gray (bg-gray-50)
   },
   pageWrap: {
-    flex: 1,
+    flexGrow: 1,
     maxWidth: 1040, // ~max-w-5xl
     width: "100%",
     alignSelf: "center",
@@ -35,46 +52,11 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 1040,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "#e5e7eb",
     padding: 16,
     marginTop: 8,
   },
   footerText: {
     textAlign: "center",
-    color: "#6b7280",
+    fontSize: 12,
   },
 });
-
-
-
-
-
-// import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-// import { useFonts } from 'expo-font';
-// import { Stack } from 'expo-router';
-// import { StatusBar } from 'expo-status-bar';
-// import 'react-native-reanimated';
-
-// import { useColorScheme } from '@/hooks/useColorScheme';
-
-// export default function RootLayout() {
-//   const colorScheme = useColorScheme();
-//   const [loaded] = useFonts({
-//     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-//   });
-
-//   if (!loaded) {
-//     // Async font loading only occurs in development.
-//     return null;
-//   }
-
-//   return (
-//     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-//       <Stack>
-//         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-//         <Stack.Screen name="+not-found" />
-//       </Stack>
-//       <StatusBar style="auto" />
-//     </ThemeProvider>
-//   );
-// }
